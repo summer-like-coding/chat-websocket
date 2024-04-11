@@ -1,18 +1,15 @@
 import process from 'node:process'
 import { Server } from 'socket.io'
+import { validToken } from '../utils/auth'
 
 export const io = new Server({})
 
-async function isValid(token: string) {
-  return token === 'valid'
-}
-
 io.use(async (socket, next) => {
   const token = socket.handshake.auth.token
-  if (await isValid(token)) {
+  if (await validToken(token)) {
     next()
   } else {
-    next(new Error("invalid token"))
+    next(new Error('Invalid token'))
   }
 })
 

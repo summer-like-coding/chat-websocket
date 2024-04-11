@@ -1,4 +1,7 @@
-# 聊天服务模块
+# 聊天服务 Socket.IO 模块
+
+- [x] Socket.IO 鉴权
+- [x] RabbitMQ 消息队列转发消息
 
 开始：
 

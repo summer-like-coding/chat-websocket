@@ -1,13 +1,14 @@
 import process from 'node:process'
 import { Connection } from 'rabbitmq-client'
+import { processMessage } from './push'
 
 export const rabbit = new Connection(process.env.RABBITMQ_URL)
 
 rabbit.on('error', (err) => {
-  console.log('[RabbitMQ] Connection error', err)
+  console.error('[RabbitMQ] Connection error', err)
 })
 rabbit.on('connection', () => {
-  console.log('[RabbitMQ] Connection successfully established')
+  console.warn('[RabbitMQ] Connection successfully established')
 })
 
 const sub = rabbit.createConsumer({
@@ -16,14 +17,11 @@ const sub = rabbit.createConsumer({
   qos: { prefetchCount: 2 },
   exchanges: [{ exchange: 'my-events', type: 'topic' }],
   queueBindings: [{ exchange: 'my-events', routingKey: 'users.*' }],
-}, async (msg) => {
-  console.log('[RabbitMQ] received message (user-events)', msg)
-})
+}, processMessage)
 
 sub.on('error', (err) => {
-  console.log('[RabbitMQ] consumer error (user-events)', err)
+  console.error('[RabbitMQ] consumer error (user-events)', err)
 })
-
 
 async function onShutdown() {
   await sub.close()

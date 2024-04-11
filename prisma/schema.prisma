@@ -37,6 +37,17 @@ model User {
   createdAt   DateTime       @default(now()) @map("created_at")
   updatedAt   DateTime       @default(now()) @updatedAt @map("updated_at")
 
+  userFriends         UserFriend[]  @relation(name: "UserFriend:user")
+  friendUserFriends   UserFriend[]  @relation(name: "UserFriend:friend")
+  userGroups          UserGroup[]
+  messages            Message[]
+  user1FriendRooms    FriendRoom[]  @relation(name: "FriendRoom:user1")
+  user2FriendRooms    FriendRoom[]  @relation(name: "FriendRoom:user2")
+  userContacts        UserContact[]
+  userFriendApplies   FriendApply[] @relation(name: "FriendApply:user")
+  targetFriendApplies FriendApply[] @relation(name: "FriendApply:target")
+  groupApplies        GroupApply[]
+
   @@map("user")
 }
 
@@ -49,6 +60,8 @@ model Role {
   isDeleted   Boolean          @default(false) @map("is_deleted")
   createdAt   DateTime         @default(now()) @map("created_at")
   updatedAt   DateTime         @default(now()) @updatedAt @map("updated_at")
+
+  rolePermissions RolePermission[]
 
   @@map("role")
 }
@@ -72,6 +85,8 @@ model Permission {
   createdAt   DateTime         @default(now()) @map("created_at")
   updatedAt   DateTime         @default(now()) @updatedAt @map("updated_at")
 
+  rolePermissions RolePermission[]
+
   @@map("permission")
 }
 
@@ -81,17 +96,23 @@ model RolePermission {
   roleId       String @map("role_id") @db.ObjectId
   permissionId String @map("permission_id") @db.ObjectId
 
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
   @@map("role_permission")
 }
 
 // 用户好友
 model UserFriend {
-  id        String           @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String           @map("user_id") @db.ObjectId
-  friendId  String           @map("friend_id") @db.ObjectId
-  status    CommonStatusType @default(ACTIVE)
-  createdAt DateTime         @default(now()) @map("created_at")
-  updatedAt DateTime         @default(now()) @updatedAt @map("updated_at")
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @map("user_id") @db.ObjectId
+  friendId  String   @map("friend_id") @db.ObjectId
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user   User @relation(name: "UserFriend:user", fields: [userId], references: [id])
+  friend User @relation(name: "UserFriend:friend", fields: [friendId], references: [id])
 
   @@map("user_friend")
 }
@@ -106,6 +127,10 @@ model Group {
   isDeleted   Boolean          @default(false) @map("is_deleted")
   createdAt   DateTime         @default(now()) @map("created_at")
   updatedAt   DateTime         @default(now()) @updatedAt @map("updated_at")
+
+  userGroups   UserGroup[]
+  groupApplies GroupApply[]
+  groupRooms   GroupRoom[]
 
   @@map("group")
 }
@@ -122,10 +147,14 @@ model UserGroup {
   userId    String           @map("user_id") @db.ObjectId
   groupId   String           @map("group_id") @db.ObjectId
   groupRole GroupRoleType    @default(MEMBER) @map("group_role")
+  remark    String?
   status    CommonStatusType @default(ACTIVE)
   isDeleted Boolean          @default(false) @map("is_deleted")
   createdAt DateTime         @default(now()) @map("created_at")
   updatedAt DateTime         @default(now()) @updatedAt @map("updated_at")
+
+  user  User  @relation(fields: [userId], references: [id])
+  group Group @relation(fields: [groupId], references: [id])
 
   @@map("user_group")
 }
@@ -145,6 +174,11 @@ model Room {
   isDeleted     Boolean          @default(false) @map("is_deleted")
   createdAt     DateTime         @default(now()) @map("created_at")
   updatedAt     DateTime         @default(now()) @updatedAt @map("updated_at")
+
+  userContacts UserContact[]
+  groupRooms   GroupRoom[]
+  friendRooms  FriendRoom[]
+  messages     Message[]
 
   @@map("room")
 }
@@ -167,6 +201,9 @@ model Message {
   createdAt DateTime         @default(now()) @map("created_at")
   updatedAt DateTime         @default(now()) @updatedAt @map("updated_at")
 
+  user User @relation(fields: [userId], references: [id])
+  room Room @relation(fields: [roomId], references: [id])
+
   @@map("message")
 }
 
@@ -181,6 +218,10 @@ model FriendRoom {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
+  room  Room @relation(fields: [roomId], references: [id])
+  user1 User @relation(name: "FriendRoom:user1", fields: [user1Id], references: [id])
+  user2 User @relation(name: "FriendRoom:user2", fields: [user2Id], references: [id])
+
   @@map("friend_room")
 }
 
@@ -193,6 +234,9 @@ model GroupRoom {
   isDeleted Boolean  @default(false) @map("is_deleted")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  room  Room  @relation(fields: [roomId], references: [id])
+  group Group @relation(fields: [groupId], references: [id])
 
   @@map("group_room")
 }
@@ -212,39 +256,55 @@ model UserContact {
   createdAt     DateTime         @default(now()) @map("created_at")
   updatedAt     DateTime         @default(now()) @updatedAt @map("updated_at")
 
+  user User @relation(fields: [userId], references: [id])
+  room Room @relation(fields: [roomId], references: [id])
+
   @@map("user_contact")
+}
+
+enum ApplyStatusType {
+  PENDING
+  ACCEPTED
+  REJECTED
+  IGNORED
 }
 
 // 用户好友申请
 model FriendApply {
-  id         String           @id @default(auto()) @map("_id") @db.ObjectId
-  userId     String           @map("user_id") @db.ObjectId
-  targetId   String           @map("target_id") @db.ObjectId
+  id         String          @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String          @map("user_id") @db.ObjectId
+  targetId   String          @map("target_id") @db.ObjectId
   type       String?
   reason     String?
   selfRemark String?
   answer     String?
-  status     CommonStatusType @default(ACTIVE)
-  isDeleted  Boolean          @default(false) @map("is_deleted")
-  createdAt  DateTime         @default(now()) @map("created_at")
-  updatedAt  DateTime         @default(now()) @updatedAt @map("updated_at")
+  status     ApplyStatusType @default(PENDING)
+  isDeleted  Boolean         @default(false) @map("is_deleted")
+  createdAt  DateTime        @default(now()) @map("created_at")
+  updatedAt  DateTime        @default(now()) @updatedAt @map("updated_at")
+
+  user   User @relation(name: "FriendApply:user", fields: [userId], references: [id])
+  target User @relation(name: "FriendApply:target", fields: [targetId], references: [id])
 
   @@map("friend_apply")
 }
 
 // 群组申请
 model GroupApply {
-  id         String           @id @default(auto()) @map("_id") @db.ObjectId
-  userId     String           @map("user_id") @db.ObjectId
-  groupId    String           @map("group_id") @db.ObjectId
+  id         String          @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String          @map("user_id") @db.ObjectId
+  groupId    String          @map("group_id") @db.ObjectId
   type       String?
   reason     String?
   selfRemark String?
   answer     String?
-  status     CommonStatusType @default(ACTIVE)
-  isDeleted  Boolean          @default(false) @map("is_deleted")
-  createdAt  DateTime         @default(now()) @map("created_at")
-  updatedAt  DateTime         @default(now()) @updatedAt @map("updated_at")
+  status     ApplyStatusType @default(PENDING)
+  isDeleted  Boolean         @default(false) @map("is_deleted")
+  createdAt  DateTime        @default(now()) @map("created_at")
+  updatedAt  DateTime        @default(now()) @updatedAt @map("updated_at")
+
+  user  User  @relation(fields: [userId], references: [id])
+  group Group @relation(fields: [groupId], references: [id])
 
   @@map("group_apply")
 }

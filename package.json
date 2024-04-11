@@ -1,29 +1,33 @@
 {
   "name": "chat-websocket",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
-  "type": "commonjs",
+  "author": "",
+  "license": "MIT",
+  "keywords": [],
   "main": "index.ts",
   "scripts": {
     "dev": "tsx watch index.ts",
     "build": "tsc --outDir dist",
     "preview": "node dist/index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
-    "@prisma/client": "^5.11.0",
+    "@prisma/client": "^5.12.1",
+    "bcryptjs": "^2.4.3",
     "bufferutil": "^4.0.8",
     "dotenv": "^16.4.5",
-    "rabbitmq-client": "^4.5.2",
+    "rabbitmq-client": "^4.5.3",
     "socket.io": "^4.7.5",
     "utf-8-validate": "^5.0.10"
   },
   "devDependencies": {
-    "@types/node": "^20.12.2",
-    "prisma": "^5.11.0",
-    "tsx": "^4.7.1",
-    "typescript": "^5.4.3"
+    "@antfu/eslint-config": "^2.13.3",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20.12.7",
+    "eslint": "^8.57.0",
+    "prisma": "^5.12.1",
+    "tsx": "^4.7.2",
+    "typescript": "^5.4.5"
   }
 }
