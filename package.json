@@ -10,7 +10,10 @@
   "scripts": {
     "dev": "tsx watch index.ts",
     "build": "tsc --outDir dist",
-    "preview": "node dist/index.js"
+    "preview": "node dist/index.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "postinstall": "simple-git-hooks"
   },
   "dependencies": {
     "@prisma/client": "^5.12.1",
@@ -26,8 +29,16 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.12.7",
     "eslint": "^8.57.0",
+    "lint-staged": "^15.2.2",
     "prisma": "^5.12.1",
+    "simple-git-hooks": "^2.11.1",
     "tsx": "^4.7.2",
     "typescript": "^5.4.5"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*": "pnpm lint:fix"
   }
 }
