@@ -12,7 +12,7 @@ rabbit.on('connection', () => {
 })
 
 const sub = rabbit.createConsumer({
-  queue: 'user-events',
+  queue: 'im-events',
   queueOptions: { durable: true },
   qos: { prefetchCount: 2 },
   exchanges: [{ exchange: 'my-events', type: 'topic' }],
@@ -20,7 +20,7 @@ const sub = rabbit.createConsumer({
 }, processMessage)
 
 sub.on('error', (err) => {
-  console.error('[RabbitMQ] consumer error (user-events)', err)
+  console.error('[RabbitMQ] consumer error (im-events)', err)
 })
 
 async function onShutdown() {

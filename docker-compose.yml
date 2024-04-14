@@ -12,15 +12,3 @@ services:
       driver: json-file
       options:
         max-size: 1m
-  rabbitmq:
-    image: rabbitmq:3.13.0-alpine
-    restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-admin}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-password}
-    logging:
-      driver: json-file
-      options:
-        max-size: 1m

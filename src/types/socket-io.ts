@@ -2,14 +2,12 @@ import type { Buffer } from 'node:buffer'
 import type { Socket } from 'socket.io'
 
 export interface ServerToClientEvents {
-  noArg: () => void
-  simpleEmit: (a: string) => void
-  basicEmit: (a: number, b: string, c: Buffer) => void
-  withAck: (d: string, callback: (e: number) => void) => void
+  hello: (data: string) => void
+  imMessage: (data: Buffer) => void
 }
 
 export interface ClientToServerEvents {
-  hello: () => void
+  ping: (data: string) => void
 }
 
 export interface InterServerEvents {

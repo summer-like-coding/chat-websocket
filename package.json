@@ -21,6 +21,7 @@
     "bufferutil": "^4.0.8",
     "dotenv": "^16.4.5",
     "rabbitmq-client": "^4.5.3",
+    "redis": "^4.6.13",
     "socket.io": "^4.7.5",
     "utf-8-validate": "^5.0.10"
   },

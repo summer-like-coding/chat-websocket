@@ -16,6 +16,9 @@ export const io = new Server<
   SocketData
 >({
   path: process.env.SERVER_PATH,
+  cors: {
+    origin: process.env.SERVER_CORS_ORIGIN,
+  },
 })
 
 io.use(async (socket, next) => {
@@ -25,6 +28,7 @@ io.use(async (socket, next) => {
     (socket as SocketWithUserId).userId = userId
     next()
   } else {
+    console.warn('Invalid token:', token)
     next(new Error('Invalid token'))
   }
 })
@@ -32,7 +36,7 @@ io.use(async (socket, next) => {
 io.on('connection', async (socket) => {
   const userId = (socket as SocketWithUserId).userId
   socket.join(userId)
-  io.to(userId).emit('noArg')
+  io.to(userId).emit('hello', 'world')
 })
 
 io.listen(Number.parseInt(process.env.SERVER_PORT || '3000'))
