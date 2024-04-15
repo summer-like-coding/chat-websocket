@@ -14,3 +14,15 @@ export const REDIS_KEY_USER_ROOM_PREFIX = 'im:user.rooms:'
  * Redis Key: 房间用户映射表
  */
 export const REDIS_KEY_ROOM_USER_PREFIX = 'im:room.users:'
+/**
+ * Redis Key: 滚动更新时间戳
+ */
+export const REDIS_KEY_SCROLL_UPDATE = 'im:scroll.update'
+/**
+ * 安全间隔
+ */
+export const SAFE_INTERVAL = 10000
+/**
+ * 循环间隔
+ */
+export const LOOP_INTERVAL = 1000

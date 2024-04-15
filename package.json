@@ -2,6 +2,7 @@
   "name": "chat-websocket",
   "type": "module",
   "version": "1.0.0",
+  "packageManager": "pnpm@8.15.7",
   "description": "",
   "author": "",
   "license": "MIT",
@@ -13,7 +14,8 @@
     "preview": "node dist/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "postinstall": "simple-git-hooks"
+    "postinstall": "simple-git-hooks",
+    "db": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.12.1",

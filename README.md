@@ -36,3 +36,13 @@ Docker 构建：
 cp .env.example .env.production
 docker compose up -d
 ```
+
+调试：
+
+```bash
+# Linux
+DEBUG=* pnpm dev
+
+# Windows
+set DEBUG=* & pnpm dev
+```

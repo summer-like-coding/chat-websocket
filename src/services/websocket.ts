@@ -28,13 +28,18 @@ io.use(async (socket, next) => {
     (socket as SocketWithUserId).userId = userId
     next()
   } else {
-    console.warn('Invalid token:', token)
+    if (process.env.DEBUG) {
+      console.warn('[SocketIO] Invalid token:', token)
+    }
     next(new Error('Invalid token'))
   }
 })
 
 io.on('connection', async (socket) => {
   const userId = (socket as SocketWithUserId).userId
+  if (process.env.DEBUG) {
+    console.warn('[SocketIO] User connected:', userId)
+  }
   socket.join(userId)
   io.to(userId).emit('hello', 'world')
 })
