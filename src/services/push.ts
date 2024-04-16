@@ -1,10 +1,9 @@
-import { Buffer } from 'node:buffer'
 import process from 'node:process'
 import type { Message } from '@prisma/client'
 import type { AsyncMessage } from 'rabbitmq-client'
 import { commandOptions } from 'redis'
 import { REDIS_KEY_HEARTBEAT_PREFIX, REDIS_KEY_ROOM_USER_PREFIX } from '../utils/settings'
-import { buffer2Hex, hex2Buffer } from '../utils/buffer'
+import { buffer2Hex } from '../utils/buffer'
 import { redisClient } from './redis'
 import { io } from './websocket'
 import { prisma } from './db'
@@ -31,13 +30,13 @@ export async function processMessage(msg: AsyncMessage) {
   })()
 
   if (process.env.DEBUG) {
-    console.warn(`[IM] user: ${userId}, message:, ${message}`)
+    console.warn(`[IM] user: ${userId}, message:, ${JSON.stringify(message)}`)
   }
 
   // 2. 从 Redis 中查询 Room 中的所有用户
   const users = await redisClient.sMembers(
     commandOptions({ returnBuffers: true }),
-    hex2Buffer(`${REDIS_KEY_ROOM_USER_PREFIX}${roomId}`),
+    `${REDIS_KEY_ROOM_USER_PREFIX}${roomId}`,
   )
 
   // 3. 向所有用户发送消息
@@ -48,6 +47,6 @@ export async function processMessage(msg: AsyncMessage) {
     if (!heartbeat) {
       return
     }
-    io.to(user).emit('imMessage', Buffer.from(JSON.stringify(message)))
+    io.to(user).emit('imMessage', message)
   })
 }

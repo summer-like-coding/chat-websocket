@@ -1,9 +1,9 @@
-import type { Buffer } from 'node:buffer'
+import type { Message } from '@prisma/client'
 import type { Socket } from 'socket.io'
 
 export interface ServerToClientEvents {
   hello: (data: string) => void
-  imMessage: (data: Buffer) => void
+  imMessage: (data: Message) => void
 }
 
 export interface ClientToServerEvents {
