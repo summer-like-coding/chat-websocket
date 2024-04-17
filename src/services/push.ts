@@ -44,6 +44,11 @@ export async function processMessage(msg: AsyncMessage) {
     const user = buffer2Hex(userBuffer)
     // 检查用户是否在线
     const heartbeat = await redisClient.get(`${REDIS_KEY_HEARTBEAT_PREFIX}${user}`)
+
+    if (process.env.DEBUG) {
+      console.warn(`[IM] user: ${user}, heartbeat: ${heartbeat}`)
+    }
+
     if (!heartbeat) {
       return
     }
