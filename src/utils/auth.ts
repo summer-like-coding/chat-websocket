@@ -26,7 +26,7 @@ export async function validToken(token: string): Promise<string | false> {
     return false
   }
   const [userId, t, hash] = tokenParts
-  const AUTH_SECRET = process.env.AUTH_SECRET!
+  const AUTH_SECRET = process.env.NEXTAUTH_SECRET!
   const sha = await sha256(`${userId}#${AUTH_SECRET}#${t}`)
   const res = await bcrypt.compare(`${userId}#${sha}`, hash)
   return res ? userId : false
