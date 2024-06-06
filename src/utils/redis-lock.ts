@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { redisClient } from '../services/redis'
+import { redisClient } from '../services/redis.js'
 
 const lua = String.raw
 const RELEASE_SCRIPT = lua`

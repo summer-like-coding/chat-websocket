@@ -2,11 +2,11 @@ import process from 'node:process'
 import type { Message } from '@prisma/client'
 import type { AsyncMessage } from 'rabbitmq-client'
 import { commandOptions } from 'redis'
-import { REDIS_KEY_HEARTBEAT_PREFIX, REDIS_KEY_ROOM_USER_PREFIX } from '../utils/settings'
-import { buffer2Hex } from '../utils/buffer'
-import { redisClient } from './redis'
-import { io } from './websocket'
-import { prisma } from './db'
+import { REDIS_KEY_HEARTBEAT_PREFIX, REDIS_KEY_ROOM_USER_PREFIX } from '../utils/settings.js'
+import { buffer2Hex } from '../utils/buffer.js'
+import { redisClient } from './redis.js'
+import { io } from './websocket.js'
+import { prisma } from './db.js'
 
 /**
  * 处理 RabbitMQ 消息

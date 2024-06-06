@@ -1,8 +1,8 @@
 import process from 'node:process'
-import { LOOP_INTERVAL, REDIS_KEY_ROOM_USER_PREFIX, REDIS_KEY_SCROLL_UPDATE, REDIS_KEY_USER_ROOM_PREFIX, SAFE_INTERVAL } from '../utils/settings'
-import { hex2Buffer } from '../utils/buffer'
-import { prisma } from './db'
-import { redisClient } from './redis'
+import { LOOP_INTERVAL, REDIS_KEY_ROOM_USER_PREFIX, REDIS_KEY_SCROLL_UPDATE, REDIS_KEY_USER_ROOM_PREFIX, SAFE_INTERVAL } from '../utils/settings.js'
+import { hex2Buffer } from '../utils/buffer.js'
+import { prisma } from './db.js'
+import { redisClient } from './redis.js'
 
 /**
  * 维护 Redis 中的 Room-User 双向映射

@@ -32,8 +32,16 @@ pnpm preview
 
 Docker 构建：
 
+配置 `.env.production` 文件，然后运行：
+
 ```bash
 cp .env.example .env.production
+```
+
+创建网络并运行：
+
+```bash
+docker network create --driver=bridge chat-system
 docker compose up -d
 ```
 

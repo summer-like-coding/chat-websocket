@@ -1,6 +1,6 @@
 import process from 'node:process'
 import { Server } from 'socket.io'
-import { validToken } from '../utils/auth'
+import { validToken } from '../utils/auth.js'
 import type {
   ClientToServerEvents,
   InterServerEvents,

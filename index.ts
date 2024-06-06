@@ -1,3 +1,3 @@
 import 'dotenv/config'
 
-export * from './src'
+export * from './src/index.js'

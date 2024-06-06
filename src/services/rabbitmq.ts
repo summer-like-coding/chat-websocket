@@ -1,6 +1,6 @@
 import process from 'node:process'
 import { Connection } from 'rabbitmq-client'
-import { processMessage } from './push'
+import { processMessage } from './push.js'
 
 export const rabbit = new Connection(process.env.RABBITMQ_URL)
 
