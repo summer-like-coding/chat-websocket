@@ -3,11 +3,16 @@
   "type": "module",
   "version": "1.0.0",
   "packageManager": "pnpm@9.2.0",
-  "description": "",
-  "author": "",
+  "description": "Socket.IO chat app with RabbitMQ and Redis",
+  "author": "Alex Sun",
   "license": "MIT",
-  "keywords": [],
-  "main": "index.ts",
+  "keywords": [
+    "socket.io",
+    "rabbitmq",
+    "redis",
+    "chat"
+  ],
+  "main": "index.js",
   "scripts": {
     "dev": "tsx watch index.ts",
     "build": "tsc --outDir dist",

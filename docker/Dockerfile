@@ -1,5 +1,6 @@
 ARG NODE_VERSION=22.2.0
 ARG NPM_REGISTRY=https://registry.npmjs.org
+ARG DEBIAN_MIRROR=mirrors.ustc.edu.cn
 
 # Builder image
 FROM node:${NODE_VERSION}-bookworm as builder
@@ -18,25 +19,29 @@ RUN npm -v && \
     pnpm i && \
     pnpm db
 RUN pnpm build
-RUN mv /app/package.json /app/dist/ && \
-    mv /app/pnpm-lock.yaml /app/dist/ && \
-    mv /app/.env /app/dist/ && \
-    mv /app/prisma /app/dist/ && \
-    mv /app/tsconfig.json /app/dist/ && \
-    cd /app/dist && \
+RUN mv package.json dist/ && \
+    mv pnpm-lock.yaml dist/ && \
+    mv .env dist/ && \
+    mv prisma/ dist/ && \
+    mv tsconfig.json dist/ && \
+    cd dist/ && \
     pnpm i --prod --ignore-scripts && \
     pnpm db && \
-    rm -rf pnpm-lock.yaml && \
-    rm -rf .env && \
-    rm -rf prisma
+    rm -rf pnpm-lock.yaml prisma/
 
 # Production image
 FROM node:${NODE_VERSION}-bookworm-slim
 ARG DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_MIRROR
 WORKDIR /app
-RUN apt-get update && \
-    apt-get install -y openssl && \
-    apt-get clean
+
+RUN sed -i "s/deb.debian.org/${DEBIAN_MIRROR}/g" /etc/apt/sources.list.d/debian.sources && \
+    apt update && \
+    apt install -y openssl && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY --from=builder /app/dist /app
+
 EXPOSE 3001
 CMD ["node", "index.js"]
